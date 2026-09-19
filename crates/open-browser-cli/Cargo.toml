@@ -1,0 +1,32 @@
+[package]
+name = "open-browser-cli"
+description = "`ob`: drive a real browser from the command line, one subcommand per action."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+
+[[bin]]
+name = "ob"
+path = "src/bin/ob.rs"
+
+[dependencies]
+open-browser-core.workspace = true
+open-browser-server.workspace = true
+anyhow.workspace = true
+clap.workspace = true
+clap_complete.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+serde_yaml.workspace = true
+tokio.workspace = true
+chrono.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+shell-words.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true

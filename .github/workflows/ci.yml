@@ -1,0 +1,99 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+  # A build that fails on a warning in CI but not locally is a bad trade; this makes them agree.
+  RUSTFLAGS: -D warnings
+
+jobs:
+  check:
+    name: fmt, clippy, test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt --all --check
+      # `--workspace` excluding the desktop crate: Tauri needs webkit2gtk and the system
+      # libraries around it, which this job does not install. `desktop` below builds it.
+      - run: cargo clippy --workspace --exclude open-browser-desktop --all-targets
+      - run: cargo test --workspace --exclude open-browser-desktop
+
+  # The session spawns a detached process group and sends signals to it, and Chrome is located by
+  # a different path list per platform; that is the part most likely to differ between systems.
+  macos:
+    name: test (macos)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo test --workspace --exclude open-browser-desktop
+
+  msrv:
+    name: build on the declared MSRV
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.85.0
+      - uses: Swatinem/rust-cache@v2
+      # Not `cargo test`: dev-dependencies are allowed to need a newer compiler than what someone
+      # installing the binary actually builds.
+      - run: cargo build --workspace --exclude open-browser-desktop
+
+  web:
+    name: web UI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @spacecorps/open-browser-web check
+      # `tests/command.test.ts` builds its fixtures by running the real binary, so that the UI's
+      # rendering of an `ob` command cannot drift from what `ob` actually accepts.
+      - run: cargo build -p open-browser-cli --bin ob
+      - run: pnpm --filter @spacecorps/open-browser-web test
+      - run: pnpm --filter @spacecorps/open-browser-web build
+
+  desktop:
+    name: desktop app
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      # Tauri 2 on Linux needs webkit2gtk 4.1 and libsoup3; without them the build fails in
+      # pkg-config with a message that does not name the package you actually want.
+      - name: System dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev \
+            patchelf libsoup-3.0-dev
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # The shell's `frontendDist` points at it, and `tauri_build` fails if it is not there.
+      - run: pnpm --filter @spacecorps/open-browser-web build
+      - run: cargo clippy -p open-browser-desktop --all-targets
+      - run: cargo build -p open-browser-desktop

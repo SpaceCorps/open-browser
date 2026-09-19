@@ -1,0 +1,6 @@
+# The code here is written dense on purpose — a `match` arm that fits on one line reads as one
+# thing — so the defaults, which explode a 90-character struct literal across five lines, would
+# fight it on every file. `Max` lets an expression stay on its line whenever it fits inside
+# `max_width`, and `max_width` itself is stock. `cargo fmt --all --check` runs in CI.
+max_width = 100
+use_small_heuristics = "Max"

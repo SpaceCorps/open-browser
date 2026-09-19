@@ -1,0 +1,58 @@
+[workspace]
+members = [
+    "crates/open-browser-core",
+    "crates/open-browser-cli",
+    "crates/open-browser-server",
+    "apps/desktop/src-tauri",
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.85"
+license = "FSL-1.1-ALv2"
+repository = "https://github.com/SpaceCorps/open-browser"
+homepage = "https://github.com/SpaceCorps/open-browser"
+authors = ["SpaceCorps"]
+
+[workspace.dependencies]
+open-browser-core = { path = "crates/open-browser-core" }
+open-browser-cli = { path = "crates/open-browser-cli" }
+open-browser-server = { path = "crates/open-browser-server" }
+anyhow = "1.0"
+thiserror = "2.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_yaml = "0.9"
+clap = { version = "4.5", features = ["derive", "env", "wrap_help", "string"] }
+clap_complete = "4.5"
+tokio = { version = "1", features = ["full"] }
+futures-util = "0.3"
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1.11", features = ["v4", "serde"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+dirs = "5.0"
+rusqlite = { version = "0.32", features = ["bundled"] }
+axum = { version = "0.8", features = ["ws"] }
+tower-http = { version = "0.6", features = ["cors", "trace", "fs"] }
+base64 = "0.22"
+# Default features only: 0.9 moved off the runtime feature flags, and `rustls` alone fails to
+# build because the fetcher's zip backend is gated separately.
+chromiumoxide = "0.9"
+shell-words = "1.1"
+tempfile = "3"
+# The stable line, spelled out. `cargo info tauri` reports 3.0.0-alpha.1 as its version, so a
+# floating requirement here would pull an alpha into the one crate that ships as an app.
+tauri = { version = "2.11" }
+tauri-build = { version = "2.6", features = [] }
+tauri-plugin-opener = "2.5"
+
+[profile.dev]
+debug = 0
+strip = "debuginfo"
+
+[profile.test]
+debug = 0
+strip = "debuginfo"

@@ -1,0 +1,14 @@
+{
+  "name": "open-browser",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm --filter @spacecorps/open-browser-web dev",
+    "build": "pnpm --filter @spacecorps/open-browser-web build",
+    "check": "pnpm --filter @spacecorps/open-browser-web check",
+    "test": "pnpm --filter @spacecorps/open-browser-web test",
+    "tauri": "pnpm --filter @spacecorps/open-browser-desktop tauri"
+  },
+  "packageManager": "pnpm@11.25.0"
+}

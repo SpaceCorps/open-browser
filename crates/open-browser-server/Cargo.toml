@@ -1,0 +1,25 @@
+[package]
+name = "open-browser-server"
+description = "HTTP API and web UI host for open-browser."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+
+[dependencies]
+open-browser-core.workspace = true
+anyhow.workspace = true
+axum.workspace = true
+tower-http.workspace = true
+tokio.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
+chrono.workspace = true
+futures-util.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true

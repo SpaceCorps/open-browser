@@ -1,0 +1,35 @@
+{
+  "name": "@spacecorps/open-browser-web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vp dev",
+    "build": "vp build",
+    "preview": "vp preview",
+    "test": "vp test",
+    "typecheck": "tsc --noEmit",
+    "check": "vp check && tsc --noEmit",
+    "check:fix": "vp check --fix",
+    "format": "vp fmt"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.562.0",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "tailwind-merge": "^3.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^26.4.1",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
+    "@vitejs/plugin-react": "^6.1.1",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.8.2",
+    "vite": "catalog:",
+    "vite-plus": "catalog:",
+    "vitest": "4.1.11"
+  }
+}

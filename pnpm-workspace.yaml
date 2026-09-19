@@ -1,0 +1,22 @@
+packages:
+  - "apps/*"
+
+allowBuilds:
+  esbuild: false
+
+# Pinned to the same versions the rest of the SpaceCorps stack uses, so a component lifted from
+# one repo into another builds without a toolchain argument.
+catalog:
+  vite: npm:@voidzero-dev/vite-plus-core@0.3.0
+  vite-plus: 0.3.0
+
+overrides:
+  vite@*: "catalog:"
+
+peerDependencyRules:
+  allowAny:
+    - vite
+  allowedVersions:
+    vite: "*"
+
+virtualStoreDirMaxLength: 40
